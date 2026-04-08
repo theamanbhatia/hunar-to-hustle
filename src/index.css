@@ -108,6 +108,33 @@ spline-viewer {
 }
 
 /* ─────────────────────────────────────────
+   MOBILE LAYOUT IMPROVEMENTS
+───────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* About section */
+  #about {
+    padding-top: 80px !important;
+    padding-bottom: 80px !important;
+  }
+
+  /* Contact section */
+  #contact {
+    padding-top: 80px !important;
+    padding-bottom: 60px !important;
+  }
+
+  /* Slightly reduce heading sizes on small phones */
+  h2 {
+    letter-spacing: -0.02em;
+  }
+
+  /* Contact cards — smaller padding on mobile */
+  #contact a[href] {
+    padding: 14px 16px !important;
+  }
+}
+
+/* ─────────────────────────────────────────
    HOVER UNDERLINE SLIDE-IN
 ───────────────────────────────────────── */
 .hover-underline {

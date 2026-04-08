@@ -61,17 +61,24 @@ function useRemoveSplineBadge() {
 export default function Hero() {
   useRemoveSplineBadge()
 
-  const [tilt, setTilt]     = useState({ x: 0, y: 0 })
-  const [gyroOn, setGyroOn] = useState(false)
-  const tiltTarget          = useRef({ x: 0, y: 0 })
-  const rafRef              = useRef(null)
+  const [tilt, setTilt]         = useState({ x: 0, y: 0 })
+  const [gyroOn, setGyroOn]     = useState(false)
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
+  const tiltTarget              = useRef({ x: 0, y: 0 })
+  const rafRef                  = useRef(null)
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
 
   /* ─────────────────────────────────────────────────────────────
      MOBILE GYROSCOPE — device orientation → CSS 3D perspective tilt
   ───────────────────────────────────────────────────────────── */
   useEffect(() => {
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-    if (!isMobile) return
+    const isPhone = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+    if (!isPhone) return
 
     const lerp = (a, b, t) => a + (b - a) * t
     const tick = () => {
@@ -133,14 +140,14 @@ export default function Hero() {
       */}
       <section
         id="hero"
-        style={{ position: 'relative', height: '250vh', backgroundColor: '#0a0a0a' }}
+        style={{ position: 'relative', height: isMobile ? '80vh' : '250vh', backgroundColor: '#0a0a0a' }}
       >
-        {/* STICKY VIEWPORT */}
+        {/* STICKY VIEWPORT — square (1:1) on mobile, full-height on desktop */}
         <div
           style={{
             position:   'sticky',
             top:        0,
-            height:     '100vh',
+            height:     isMobile ? '75vh' : '100vh',
             width:      '100%',
             transform:  gyroTransform,
             willChange: gyroOn ? 'transform' : 'auto',
