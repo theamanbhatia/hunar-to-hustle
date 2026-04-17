@@ -7,11 +7,13 @@ import { motion, useInView } from 'framer-motion'
    in chronological order before deploying.
 ───────────────────────────────────────── */
 const episodes = [
-  { id: 'N9oL2Z_dF_g', title: 'Legend of Bollywood — Raza Murad (Ep. 1)' },
-  { id: 'O2zyDZrPApw', title: 'You\'ve Seen Him Everywhere — Virendra Saxena (Promo)' },
-  { id: '6rWpPIsNzF0', title: 'A Journey Through Life and Cinema — Raza Murad' },
-  { id: '0gtiYBJJ2iM', title: 'From Struggles to Success — Virendra Saxena' },
+  { id: 'wReMSsh4BIQ', title: 'New Episode' },
+  { id: 'sCkvXyQhmSs', title: 'New Episode' },
   { id: '80j8jFRo_II', title: 'Real Talk with Virendra Saxena (Ep. 2)' },
+  { id: '0gtiYBJJ2iM', title: 'From Struggles to Success — Virendra Saxena' },
+  { id: '6rWpPIsNzF0', title: 'A Journey Through Life and Cinema — Raza Murad' },
+  { id: 'O2zyDZrPApw', title: 'You\'ve Seen Him Everywhere — Virendra Saxena (Promo)' },
+  { id: 'N9oL2Z_dF_g', title: 'Legend of Bollywood — Raza Murad (Ep. 1)' },
 ]
 
 const CARD_WIDTH   = 560
