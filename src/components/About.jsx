@@ -104,6 +104,13 @@ export default function About() {
   const sectionRef = useRef(null)
   const imageRef   = useRef(null)
   const inView     = useInView(sectionRef, { once: true, margin: '-80px' })
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640)
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 640)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
 
   const { scrollYProgress } = useScroll({ target: imageRef, offset: ['start end', 'end start'] })
   const imageY = useTransform(scrollYProgress, [0, 1], [-28, 28])
@@ -280,29 +287,31 @@ export default function About() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           style={{
-            marginTop:    '96px',
+            marginTop:    isMobile ? '64px' : '96px',
             border:       '1px solid rgba(201,168,76,0.15)',
-            borderRadius: '20px',
+            borderRadius: isMobile ? '16px' : '20px',
             overflow:     'hidden',
           }}
         >
-          {/* Table header */}
-          <div style={{
-            display:             'grid',
-            gridTemplateColumns: '1.4fr 1.2fr 1.4fr 2fr',
-            padding:             '16px 32px',
-            borderBottom:        '1px solid rgba(255,255,255,0.06)',
-          }}>
-            {['Platform', 'Followers', 'Lifetime Views', 'Key Highlights'].map(h => (
-              <span key={h} style={{
-                fontFamily:    '"DM Sans", sans-serif',
-                fontSize:      '11px',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                color:         'rgba(245,245,245,0.3)',
-              }}>{h}</span>
-            ))}
-          </div>
+          {/* Table header — hidden on mobile, shown on desktop */}
+          {!isMobile && (
+            <div style={{
+              display:             'grid',
+              gridTemplateColumns: '1.4fr 1.2fr 1.4fr 2fr',
+              padding:             '16px 32px',
+              borderBottom:        '1px solid rgba(255,255,255,0.06)',
+            }}>
+              {['Platform', 'Followers', 'Lifetime Views', 'Key Highlights'].map(h => (
+                <span key={h} style={{
+                  fontFamily:    '"DM Sans", sans-serif',
+                  fontSize:      '11px',
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  color:         'rgba(245,245,245,0.3)',
+                }}>{h}</span>
+              ))}
+            </div>
+          )}
 
           {/* Rows */}
           {/* YouTube */}
@@ -339,9 +348,14 @@ export default function About() {
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.5 + i * 0.08 }}
               style={{
-                display: 'grid', gridTemplateColumns: '1.4fr 1.2fr 1.4fr 2fr',
-                padding: '22px 32px', borderBottom: '1px solid rgba(255,255,255,0.05)',
-                alignItems: 'center', transition: 'background 0.2s',
+                display: isMobile ? 'flex' : 'grid',
+                flexDirection: isMobile ? 'column' : undefined,
+                gridTemplateColumns: isMobile ? undefined : '1.4fr 1.2fr 1.4fr 2fr',
+                padding: isMobile ? '24px 20px' : '22px 32px',
+                gap: isMobile ? '12px' : undefined,
+                borderBottom: '1px solid rgba(255,255,255,0.05)',
+                alignItems: isMobile ? 'flex-start' : 'center',
+                transition: 'background 0.2s',
               }}
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(201,168,76,0.03)'}
               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
@@ -350,9 +364,25 @@ export default function About() {
                 {row.icon}
                 <span style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '15px', fontWeight: 600, color: 'rgba(245,245,245,0.85)' }}>{row.name}</span>
               </div>
-              <span style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '15px', fontWeight: 500, color: 'rgba(245,245,245,0.75)' }}>{row.followers}</span>
-              <span style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '15px', fontWeight: 600, color: '#c9a84c' }}>{row.views}</span>
-              <span style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '14px', fontWeight: 300, color: 'rgba(245,245,245,0.45)', lineHeight: 1.5 }}>{row.highlight}</span>
+              {isMobile ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingLeft: '4px' }}>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <span style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '11px', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(245,245,245,0.3)' }}>Followers</span>
+                    <span style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '15px', fontWeight: 500, color: 'rgba(245,245,245,0.75)' }}>{row.followers}</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <span style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '11px', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(245,245,245,0.3)' }}>Lifetime Views</span>
+                    <span style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '15px', fontWeight: 600, color: '#c9a84c' }}>{row.views}</span>
+                  </div>
+                  <span style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '14px', fontWeight: 300, color: 'rgba(245,245,245,0.45)', lineHeight: 1.5 }}>{row.highlight}</span>
+                </div>
+              ) : (
+                <>
+                  <span style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '15px', fontWeight: 500, color: 'rgba(245,245,245,0.75)' }}>{row.followers}</span>
+                  <span style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '15px', fontWeight: 600, color: '#c9a84c' }}>{row.views}</span>
+                  <span style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '14px', fontWeight: 300, color: 'rgba(245,245,245,0.45)', lineHeight: 1.5 }}>{row.highlight}</span>
+                </>
+              )}
             </motion.div>
           ))}
 
@@ -362,8 +392,11 @@ export default function About() {
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.66 }}
             style={{
-              display: 'grid', gridTemplateColumns: '1.4fr 3.6fr',
-              padding: '22px 32px', alignItems: 'center', transition: 'background 0.2s',
+              display: 'grid',
+              gridTemplateColumns: isMobile ? '1fr' : '1.4fr 3.6fr',
+              padding: isMobile ? '24px 20px' : '22px 32px',
+              gap: isMobile ? '16px' : undefined,
+              alignItems: 'center', transition: 'background 0.2s',
             }}
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(201,168,76,0.03)'}
             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
