@@ -7,7 +7,8 @@ import { motion, useInView } from 'framer-motion'
    in chronological order before deploying.
 ───────────────────────────────────────── */
 const episodes = [
-  { id: 'wReMSsh4BIQ', title: 'New Episode' },
+  { id: '9yf9LAdlWLQ', title: 'Hero से Villain — Shahbaz Khan (Ep. 4)' },
+  { id: 'wReMSsh4BIQ', title: 'MOTHER के साथ सबसे खास रिश्ता — Upasana Singh (Ep. 3)' },
   { id: 'sCkvXyQhmSs', title: 'New Episode' },
   { id: '80j8jFRo_II', title: 'Real Talk with Virendra Saxena (Ep. 2)' },
   { id: '0gtiYBJJ2iM', title: 'From Struggles to Success — Virendra Saxena' },
