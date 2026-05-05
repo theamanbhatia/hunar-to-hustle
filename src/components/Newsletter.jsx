@@ -3,9 +3,49 @@ import { motion } from 'framer-motion'
 
 const FORM_URL = 'https://script.google.com/macros/s/AKfycbxQbvWAVuSOInwSt0Ug4QFxfhkS9YNIq7VpaSzgkxP5u_GNDraFy4Eaoz97C-tb7msQ/exec'
 
+const PARTNERSHIP_TYPES = [
+  'Podcast Sponsorship',
+  'Product Feature / Placement',
+  'Guest Collaboration',
+  'Social Media Campaign',
+  'Event Partnership',
+  'Other',
+]
+
+const inputStyle = {
+  width:        '100%',
+  padding:      '14px 18px',
+  background:   'rgba(255,255,255,0.04)',
+  border:       '1px solid rgba(201,168,76,0.18)',
+  borderRadius: '12px',
+  color:        '#f5f5f5',
+  fontFamily:   '"DM Sans", sans-serif',
+  fontSize:     '15px',
+  outline:      'none',
+  boxSizing:    'border-box',
+  transition:   'border-color 0.2s',
+}
+
+const labelStyle = {
+  display:       'block',
+  fontFamily:    '"DM Sans", sans-serif',
+  fontSize:      '12px',
+  letterSpacing: '0.15em',
+  textTransform: 'uppercase',
+  color:         'rgba(201,168,76,0.6)',
+  marginBottom:  '8px',
+}
+
 export default function Newsletter() {
-  const [form, setForm]       = useState({ name: '', email: '', phone: '' })
-  const [status, setStatus]   = useState('idle') // idle | loading | success | error
+  const [form, setForm] = useState({
+    brandName:       '',
+    contactName:     '',
+    email:           '',
+    phone:           '',
+    partnershipType: '',
+    message:         '',
+  })
+  const [status, setStatus] = useState('idle') // idle | loading | success | error
 
   const handleChange = (e) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
@@ -16,10 +56,17 @@ export default function Newsletter() {
     setStatus('loading')
 
     try {
-      const url = `${FORM_URL}?name=${encodeURIComponent(form.name)}&email=${encodeURIComponent(form.email)}&phone=${encodeURIComponent(form.phone)}`
-      await fetch(url, { method: 'GET', mode: 'no-cors' })
+      const params = new URLSearchParams({
+        name:            form.contactName,
+        email:           form.email,
+        phone:           form.phone,
+        brandName:       form.brandName,
+        partnershipType: form.partnershipType,
+        message:         form.message,
+      })
+      await fetch(`${FORM_URL}?${params.toString()}`, { method: 'GET', mode: 'no-cors' })
       setStatus('success')
-      setForm({ name: '', email: '', phone: '' })
+      setForm({ brandName: '', contactName: '', email: '', phone: '', partnershipType: '', message: '' })
     } catch {
       setStatus('error')
     }
@@ -27,7 +74,7 @@ export default function Newsletter() {
 
   return (
     <section
-      id="newsletter"
+      id="partnership"
       style={{
         padding:    'clamp(80px, 12vw, 140px) clamp(24px, 5vw, 80px)',
         background: '#0a0a0a',
@@ -38,17 +85,17 @@ export default function Newsletter() {
     >
       {/* Subtle gold glow behind */}
       <div aria-hidden style={{
-        position:     'absolute',
-        top:          '50%',
-        left:         '50%',
-        transform:    'translate(-50%, -50%)',
-        width:        '600px',
-        height:       '300px',
-        background:   'radial-gradient(ellipse, rgba(201,168,76,0.06) 0%, transparent 70%)',
-        pointerEvents:'none',
+        position:      'absolute',
+        top:           '50%',
+        left:          '50%',
+        transform:     'translate(-50%, -50%)',
+        width:         '700px',
+        height:        '350px',
+        background:    'radial-gradient(ellipse, rgba(201,168,76,0.06) 0%, transparent 70%)',
+        pointerEvents: 'none',
       }} />
 
-      <div style={{ maxWidth: '560px', margin: '0 auto', position: 'relative' }}>
+      <div style={{ maxWidth: '600px', margin: '0 auto', position: 'relative' }}>
 
         {/* Header */}
         <motion.div
@@ -66,7 +113,7 @@ export default function Newsletter() {
             color:         'rgba(201,168,76,0.7)',
             margin:        '0 0 14px',
           }}>
-            Stay in the loop
+            Brand Collaborations
           </p>
           <h2 style={{
             fontFamily:    '"Plus Jakarta Sans", system-ui, sans-serif',
@@ -77,7 +124,7 @@ export default function Newsletter() {
             margin:        '0 0 16px',
             letterSpacing: '-0.03em',
           }}>
-            Never Miss an Episode
+            Partner With Us
           </h2>
           <p style={{
             fontFamily: '"DM Sans", sans-serif',
@@ -86,7 +133,7 @@ export default function Newsletter() {
             margin:     0,
             lineHeight: 1.6,
           }}>
-            Get notified the moment a new episode of Hunar to Hustle drops.
+            Reach a passionate audience of entertainment enthusiasts. Tell us about your brand and let's create something together.
           </p>
         </motion.div>
 
@@ -104,19 +151,19 @@ export default function Newsletter() {
               background:   'rgba(201,168,76,0.04)',
             }}
           >
-            <div style={{ fontSize: '40px', marginBottom: '16px' }}>🎙️</div>
+            <div style={{ fontSize: '40px', marginBottom: '16px' }}>🤝</div>
             <h3 style={{
               fontFamily: '"Plus Jakarta Sans", sans-serif',
               fontSize:   '22px', fontWeight: 700,
               color:      '#f5f5f5', margin: '0 0 10px',
-            }}>You're in!</h3>
+            }}>Enquiry Received!</h3>
             <p style={{
               fontFamily: '"DM Sans", sans-serif',
               fontSize:   '15px',
               color:      'rgba(245,245,245,0.45)',
               margin:     0,
             }}>
-              We'll notify you when the next episode drops.
+              Our team will review your proposal and get back to you shortly.
             </p>
           </motion.div>
         ) : (
@@ -128,48 +175,118 @@ export default function Newsletter() {
             transition={{ duration: 0.65, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
           >
-            {[
-              { name: 'name',  label: 'Your Name',     type: 'text',  placeholder: '',  required: true  },
-              { name: 'email', label: 'Email Address',  type: 'email', placeholder: '',  required: false },
-              { name: 'phone', label: 'Phone Number',   type: 'tel',   placeholder: '',  required: true  },
-            ].map(field => (
-              <div key={field.name}>
-                <label style={{
-                  display:       'block',
-                  fontFamily:    '"DM Sans", sans-serif',
-                  fontSize:      '12px',
-                  letterSpacing: '0.15em',
-                  textTransform: 'uppercase',
-                  color:         'rgba(201,168,76,0.6)',
-                  marginBottom:  '8px',
-                }}>
-                  {field.label}{field.required && <span style={{ color: '#c9a84c' }}> *</span>}
+            {/* Brand Name */}
+            <div>
+              <label style={labelStyle}>
+                Brand / Company Name <span style={{ color: '#c9a84c' }}>*</span>
+              </label>
+              <input
+                type="text"
+                name="brandName"
+                value={form.brandName}
+                onChange={handleChange}
+                required
+                style={inputStyle}
+                onFocus={e => e.target.style.borderColor = 'rgba(201,168,76,0.6)'}
+                onBlur={e  => e.target.style.borderColor = 'rgba(201,168,76,0.18)'}
+              />
+            </div>
+
+            {/* Contact Person */}
+            <div>
+              <label style={labelStyle}>
+                Contact Person <span style={{ color: '#c9a84c' }}>*</span>
+              </label>
+              <input
+                type="text"
+                name="contactName"
+                value={form.contactName}
+                onChange={handleChange}
+                required
+                style={inputStyle}
+                onFocus={e => e.target.style.borderColor = 'rgba(201,168,76,0.6)'}
+                onBlur={e  => e.target.style.borderColor = 'rgba(201,168,76,0.18)'}
+              />
+            </div>
+
+            {/* Email + Phone row */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div>
+                <label style={labelStyle}>
+                  Email Address <span style={{ color: '#c9a84c' }}>*</span>
                 </label>
                 <input
-                  type={field.type}
-                  name={field.name}
-                  value={form[field.name]}
+                  type="email"
+                  name="email"
+                  value={form.email}
                   onChange={handleChange}
-                  placeholder={field.placeholder}
-                  required={field.required}
-                  style={{
-                    width:        '100%',
-                    padding:      '14px 18px',
-                    background:   'rgba(255,255,255,0.04)',
-                    border:       '1px solid rgba(201,168,76,0.18)',
-                    borderRadius: '12px',
-                    color:        '#f5f5f5',
-                    fontFamily:   '"DM Sans", sans-serif',
-                    fontSize:     '15px',
-                    outline:      'none',
-                    boxSizing:    'border-box',
-                    transition:   'border-color 0.2s',
-                  }}
-                  onFocus={e  => e.target.style.borderColor = 'rgba(201,168,76,0.6)'}
-                  onBlur={e   => e.target.style.borderColor = 'rgba(201,168,76,0.18)'}
+                  required
+                  style={inputStyle}
+                  onFocus={e => e.target.style.borderColor = 'rgba(201,168,76,0.6)'}
+                  onBlur={e  => e.target.style.borderColor = 'rgba(201,168,76,0.18)'}
                 />
               </div>
-            ))}
+              <div>
+                <label style={labelStyle}>Phone Number</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  style={inputStyle}
+                  onFocus={e => e.target.style.borderColor = 'rgba(201,168,76,0.6)'}
+                  onBlur={e  => e.target.style.borderColor = 'rgba(201,168,76,0.18)'}
+                />
+              </div>
+            </div>
+
+            {/* Partnership Type */}
+            <div>
+              <label style={labelStyle}>
+                Type of Collaboration <span style={{ color: '#c9a84c' }}>*</span>
+              </label>
+              <select
+                name="partnershipType"
+                value={form.partnershipType}
+                onChange={handleChange}
+                required
+                style={{
+                  ...inputStyle,
+                  appearance:      'none',
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(201,168,76,0.6)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`,
+                  backgroundRepeat:   'no-repeat',
+                  backgroundPosition: 'right 18px center',
+                  paddingRight:       '42px',
+                  cursor:             'pointer',
+                }}
+                onFocus={e => e.target.style.borderColor = 'rgba(201,168,76,0.6)'}
+                onBlur={e  => e.target.style.borderColor = 'rgba(201,168,76,0.18)'}
+              >
+                <option value="" style={{ background: '#111' }}>Select an option…</option>
+                {PARTNERSHIP_TYPES.map(type => (
+                  <option key={type} value={type} style={{ background: '#111' }}>{type}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Message */}
+            <div>
+              <label style={labelStyle}>Tell Us About Your Brand</label>
+              <textarea
+                name="message"
+                value={form.message}
+                onChange={handleChange}
+                rows={4}
+                placeholder="Share a brief about your brand, campaign goals, or collaboration idea…"
+                style={{
+                  ...inputStyle,
+                  resize:     'vertical',
+                  lineHeight: 1.6,
+                }}
+                onFocus={e => e.target.style.borderColor = 'rgba(201,168,76,0.6)'}
+                onBlur={e  => e.target.style.borderColor = 'rgba(201,168,76,0.18)'}
+              />
+            </div>
 
             {status === 'error' && (
               <p style={{
@@ -203,7 +320,7 @@ export default function Newsletter() {
                 transition:    'opacity 0.2s',
               }}
             >
-              {status === 'loading' ? 'Submitting…' : 'Notify Me →'}
+              {status === 'loading' ? 'Submitting…' : 'Send Partnership Enquiry →'}
             </motion.button>
 
             <p style={{
@@ -213,7 +330,7 @@ export default function Newsletter() {
               textAlign:  'center',
               margin:     '4px 0 0',
             }}>
-              No spam. Only new episode alerts.
+              We typically respond within 1–2 business days.
             </p>
           </motion.form>
         )}
